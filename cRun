@@ -1,0 +1,28 @@
+#!/bin/bash
+srcHash=0
+inpHash=0
+tempInp=1
+tempSrc=1
+while [ 1 ]
+do
+	tempSrc=`shasum $1`
+	if [ -n "$2" ]
+	then
+		tempInp=`shasum $2`
+	fi
+	if [ "$srcHash" != "$tempSrc" ] || [ "$inpHash" != "$tempInp" ]  
+	then
+		g++ $1
+		echo "Compiled"
+		if [ -n "$2" ]
+		then
+			inpHash="$tempInp"
+			./a.out < $2
+		else
+			./a.out
+		fi
+		srcHash="$tempSrc"
+		echo 
+	fi
+	sleep 2
+done
