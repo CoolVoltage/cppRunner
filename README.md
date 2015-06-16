@@ -11,6 +11,6 @@ $ cp cRun /usr/bin/.
 #Options
 
 ```sh
-$ cRun srcFileName.cpp testInput.cpp
+$ cRun srcFileName.cpp testInput.txt
 ```
  

@@ -1,6 +1,6 @@
 #!/bin/bash
 srcHash=0
-inpHash=0
+inpHash=1
 tempInp=1
 tempSrc=1
 
@@ -11,16 +11,22 @@ do
 	then
 		tempInp=`shasum $2`
 	fi
-	if [ "$srcHash" != "$tempSrc" ] || [ "$inpHash" != "$tempInp" ]  
+	if [ "$srcHash" != "$tempSrc" ] || [ "$inpHash" != "$tempInp" ]
 	then
 		g++ $1
 		echo "Compiled"
 		if [ -n "$2" ]
 		then
 			inpHash="$tempInp"
-			./a.out < $2
+			if [ -e "a.out" ]
+			then
+				./a.out < $2
+			fi
 		else
-			./a.out
+			if [ -e "a.out" ]
+			then
+				./a.out
+			fi
 		fi
 		srcHash="$tempSrc"
 		echo 
