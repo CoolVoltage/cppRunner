@@ -13,4 +13,12 @@ $ cp cRun /usr/bin/.
 ```sh
 $ cRun srcFileName.cpp testInput.txt
 ```
+Or
+```sh
+$ cRun srcFileName.c testInput.txt
+```
+Or
+```sh
+$ cRun srcFileName.cpp
+```
  

@@ -39,21 +39,16 @@ do
 		then
 			#if no input file is given , inpHash == tempInpHash == 1 holds forever	
 			inpHash="$tempInpHash"
-			
 			inputFile="$2"
-			#if [ -e "a.out" ]
-			#then
-			#	./a.out < $2
-			#fi
 		else
 			inputFile=""
 		fi
-		
+	
+		#if a.out file exists...	
 		if [ -e "a.out" ]
 		then
 			cat $2 | ./a.out
 		fi
-		#fi
 
 		srcHash="$tempSrcHash"
 		echo 
