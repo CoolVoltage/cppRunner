@@ -1,34 +1,61 @@
 #!/bin/bash
 srcHash=0
 inpHash=1
-tempInp=1
-tempSrc=1
 
+tempInpHash=1
+tempSrcHash=1
+
+#handling fileExtension for c and c++ compiling
+fileExtension=`echo $1 | cut -d "." -f 2`
+if [ "$fileExtension" = "cpp" ]
+then
+	compiler="g++"
+else
+	compiler="gcc"
+fi
+
+#runs forever unless source isn't mentioned
 while [ -n "$1" ]
 do
-	tempSrc=`shasum $1`
+	#tempSrcHash and temoInpHash to hold the intermediate hash to compare with previous hash of the file to detect change in src and input
+	tempSrcHash=`shasum $1`
 	if [ -n "$2" ]
 	then
-		tempInp=`shasum $2`
+		tempInpHash=`shasum $2`
 	fi
-	if [ "$srcHash" != "$tempSrc" ] || [ "$inpHash" != "$tempInp" ]
+
+	#checks for change either in source or input files
+	if [ "$srcHash" != "$tempSrcHash" ] || [ "$inpHash" != "$tempInpHash" ]
 	then
-		g++ $1
-		echo "Compiled"
+		#clears screen for output
+		reset
+
+		#compiles according to fileExtension
+		`$compiler $1`
+		echo "Compiled at `date`"
+	
+		#if input file is present , feed it to a.out or else...
 		if [ -n "$2" ]
 		then
-			inpHash="$tempInp"
-			if [ -e "a.out" ]
-			then
-				./a.out < $2
-			fi
+			#if no input file is given , inpHash == tempInpHash == 1 holds forever	
+			inpHash="$tempInpHash"
+			
+			inputFile="$2"
+			#if [ -e "a.out" ]
+			#then
+			#	./a.out < $2
+			#fi
 		else
-			if [ -e "a.out" ]
-			then
-				./a.out
-			fi
+			inputFile=""
 		fi
-		srcHash="$tempSrc"
+		
+		if [ -e "a.out" ]
+		then
+			cat $2 | ./a.out
+		fi
+		#fi
+
+		srcHash="$tempSrcHash"
 		echo 
 	fi
 	sleep 2
