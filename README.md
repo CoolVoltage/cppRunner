@@ -11,11 +11,11 @@ $ cp cRun /usr/bin/.
 #Options
 
 ```sh
-$ cRun srcFileName.cpp testInput.txt
+$ cRun srcFileName.cpp -i testInput.txt
 ```
 Or
 ```sh
-$ cRun srcFileName.c testInput.txt
+$ cRun srcFileName.c -i testInput.txt
 ```
 Or
 ```sh

@@ -5,17 +5,52 @@ inpHash=1
 tempInpHash=1
 tempSrcHash=1
 
-#handling fileExtension for c and c++ compiling
-fileName=`echo $1 | cut -d "." -f 1`
-echo $fileName
+inputFile=""
+file=""
+
+file="$1"
+
+if [ -z "$file" ]
+then
+	echo "Please specify source file.Error Exiting..."
+	exit
+fi
+
+if [ ! -e "$file" ]
+then
+	echo "Source file doesn't exist.Error Exiting..."
+	exit
+fi
+
+#handling fileExtension for make
+fileName=`echo $file | cut -d "." -f 1`
+
+#iterate through arguments and set options
+while [ -n "$2" ]
+do
+	case $2 in
+		"-i") 
+			shift
+				if [ -e "$2" ]
+				then
+					inputFile="$2"
+				else
+					echo "The input file doesn't exist.Exiting.."
+					exit
+				fi
+			;;
+	esac
+	shift
+done
+
 #runs forever unless source isn't mentioned
-while [ -n "$1" ]
+while [ true ]
 do
 	#tempSrcHash and temoInpHash to hold the intermediate hash to compare with previous hash of the file to detect change in src and input
-	tempSrcHash=`shasum $1`
-	if [ -n "$2" ]
+	tempSrcHash=`shasum $file`
+	if [ ! -z "$inputFile" ]
 	then
-		tempInpHash=`shasum $2`
+		tempInpHash=`shasum $inputFile`
 	fi
 
 	#checks for change either in source or input files
@@ -28,26 +63,19 @@ do
 		make $fileName
 		echo "Compiled at `date`"
 	
-		#if input file is present , feed it to a.out or else...
-		if [ -n "$2" ]
+		#if no input file is given , inpHash == tempInpHash == 1 holds forever	
+		if [ ! -z "$inputFile" ]
 		then
-			#if no input file is given , inpHash == tempInpHash == 1 holds forever	
 			inpHash="$tempInpHash"
-			inputFile="$2"
-		else
-			inputFile=""
 		fi
 	
 		if [ -e "$fileName" ]
 		then
-			cat $2 | $fileName
+			cat $inputFile | $fileName
 		fi
 		
 		srcHash="$tempSrcHash"
 	fi
 	sleep 2
 done
-if [ -z "$1" ]
-then
-	echo "Please specify source file.Error Exiting..."
-fi
+
