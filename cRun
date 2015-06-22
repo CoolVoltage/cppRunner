@@ -6,14 +6,8 @@ tempInpHash=1
 tempSrcHash=1
 
 #handling fileExtension for c and c++ compiling
-fileExtension=`echo $1 | cut -d "." -f 2`
-if [ "$fileExtension" = "cpp" ]
-then
-	compiler="g++"
-else
-	compiler="gcc"
-fi
-
+fileName=`echo $1 | cut -d "." -f 1`
+echo $fileName
 #runs forever unless source isn't mentioned
 while [ -n "$1" ]
 do
@@ -31,7 +25,7 @@ do
 		reset
 
 		#compiles according to fileExtension
-		`$compiler $1`
+		make $fileName
 		echo "Compiled at `date`"
 	
 		#if input file is present , feed it to a.out or else...
@@ -44,14 +38,12 @@ do
 			inputFile=""
 		fi
 	
-		#if a.out file exists...	
-		if [ -e "a.out" ]
+		if [ -e "$fileName" ]
 		then
-			cat $2 | ./a.out
+			cat $2 | $fileName
 		fi
-
+		
 		srcHash="$tempSrcHash"
-		echo 
 	fi
 	sleep 2
 done
