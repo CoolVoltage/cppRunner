@@ -1,4 +1,8 @@
 #!/bin/bash
+
+#to kill child process on ctrl+c
+trap "kill 0" SIGINT
+
 srcHash=0
 inpHash=1
 
@@ -7,6 +11,9 @@ tempSrcHash=1
 
 inputFile=""
 file=""
+
+#holds pid of childprocess which runs the executable file
+outputChild=""
 
 file="$1"
 
@@ -43,7 +50,6 @@ do
 	shift
 done
 
-#runs forever unless source isn't mentioned
 while [ true ]
 do
 	#tempSrcHash and temoInpHash to hold the intermediate hash to compare with previous hash of the file to detect change in src and input
@@ -56,6 +62,11 @@ do
 	#checks for change either in source or input files
 	if [ "$srcHash" != "$tempSrcHash" ] || [ "$inpHash" != "$tempInpHash" ]
 	then
+		if [ ! -z "$outputChild" ]
+		then
+			kill "$outputChild"		
+			outputChild=""
+		fi
 		#clears screen for output
 		reset
 
@@ -71,7 +82,8 @@ do
 	
 		if [ -e "$fileName" ]
 		then
-			cat $inputFile | $fileName
+			cat $inputFile | $fileName &
+			outputChild=$!
 		fi
 		
 		srcHash="$tempSrcHash"
