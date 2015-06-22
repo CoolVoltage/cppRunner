@@ -11,6 +11,7 @@ tempSrcHash=1
 
 inputFile=""
 file=""
+extension=""
 
 #holds pid of childprocess which runs the executable file
 outputChild=""
@@ -31,7 +32,14 @@ fi
 
 #handling fileExtension for make
 fileName=`echo $file | cut -d "." -f 1`
+extension=`echo $file | cut -d "." -f 2`
 
+#check if extension is present, second check is required if no '.' is present
+if [ -z "$extension" ] || [ "$extension" == "$fileName" ]
+then
+	echo "No file extension present?Exiting..."
+	exit
+fi
 #iterate through arguments and set options
 while [ -n "$2" ]
 do
@@ -82,7 +90,7 @@ do
 	
 		if [ -e "$fileName" ]
 		then
-			cat $inputFile | $fileName &
+			cat $inputFile | "./$fileName" &
 			outputChild=$!
 		fi
 		
