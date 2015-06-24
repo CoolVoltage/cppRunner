@@ -78,6 +78,9 @@ do
 		#clears screen for output
 		reset
 
+		#remove output file , if present
+		rm $fileName
+
 		#compiles according to fileExtension
 		make $fileName
 		echo "Compiled at `date`"
