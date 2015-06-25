@@ -16,6 +16,21 @@ extension=""
 #holds pid of childprocess which runs the executable file
 outputChild=""
 
+#
+runExecutable () {
+	rerun=""
+	cat $inputFile | "./$fileName"	
+	echo
+	echo "(Type rs to rerun)"
+	read rerun </dev/tty
+	if [ "$rerun" == "rs" ]
+	then
+		reset
+		runExecutable
+	fi
+}
+
+#
 file="$1"
 
 if [ -z "$file" ]
@@ -93,7 +108,7 @@ do
 	
 		if [ -e "$fileName" ]
 		then
-			cat $inputFile | "./$fileName" &
+			(runExecutable)&
 			outputChild=$!
 		fi
 		
